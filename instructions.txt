@@ -1,0 +1,26 @@
+/*
+
+call newGame on page load and when user clicks new game
+
+newGame:
+
+	everything necessary to start a new game
+
+	named function: generate a random number between 1 and 100
+
+named function: 
+
+	user should get feedback on each guess: too low, too high, correct
+
+	should say how close they are and if they are closer or further
+
+feedback and guess should appear in div#feedback, default text should be "Make Your Guess!"
+
+game should track and display how many guesses the user has made span#count (defaults to 0)
+
+add an li for each prior guess
+
+guess must be integer between 1 and 100
+
+
+*/
