@@ -1,8 +1,8 @@
+var gameScale;
+
 $(document).ready(function(){
 
-	var newGame100 = newGame(100);
-
-	newGame100.resetGame();
+	newGame.resetGame(100);
 
 	/*--- Display information modal box ---*/
   	$(".what").click(function(){
@@ -17,7 +17,7 @@ $(document).ready(function(){
 
 });
 
-var newGame = function(val){
+var newGame = (function(){
 
 	var secretNumber;
 
@@ -29,9 +29,13 @@ var newGame = function(val){
 
 		},
 
-		resetGame: function(){
+		resetGame: function(val){
 
 			secretNumber = Math.ceil(Math.random()*val);
+
+			gameScale = val;
+
+			feedback.passSecretNumber(secretNumber);
 
 			$('#count').text() = 0;
 
@@ -41,15 +45,41 @@ var newGame = function(val){
 
 	}
 
-};
+})();
 
 
-var feedback = function(input,secretNumber){
+var feedback = (function(){
 
-	var checkVal = function(){
+	var secretNumber;
 
+	var difference = 0;
 
-	
+	var differencePrev;
+
+	return {
+
+		passSecretNumber: function(passedNumber){
+
+			secretNumber = passedNumber;
+
+		},
+
+		checkVal: function(input){
+
+			if ( !+input || ( input - Math.floor(input) ) || input < 1 || input > gameScale ){
+
+				return -1;
+
+			}
+
+			differencePrev = difference;
+
+			difference = Math.abs( input - secretNumber );
+
+			if ( difference > 50 )
+
+		}
+
 	}
 
 	var prevVal = +$('#feedback');
@@ -64,4 +94,4 @@ var feedback = function(input,secretNumber){
 
 	}
 
-}
+})();
