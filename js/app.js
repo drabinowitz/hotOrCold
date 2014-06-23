@@ -2,23 +2,23 @@
 
 $(document).ready(function(){
 
-	var newGame = (function() {
+	var game = (function() {
 
 		var secretNumber;
 
 		return {
 
-			returnNum: function(){
+			scale: 100,
 
-				return secretNumber;
+			input: 0,
 
-			},
+			inputPrev: 0,
 
-			resetGame: function(val){
+			newGame: function(val){
 
 				secretNumber = Math.ceil(Math.random()*val);
 
-				gameScale = val;
+				game.scale = val;
 
 				feedback.passSecretNumber(secretNumber);
 
@@ -66,31 +66,7 @@ $(document).ready(function(){
 
 		var difference;
 
-		return {
-
-			passSecretNumber: function(passedNumber){
-
-				secretNumber = passedNumber;
-
-			},
-
-			checkVal: function(input){
-
-				if ( !+input || ( input - Math.floor(input) ) || input < 1 || input > gameScale ){
-
-					alert('this is not a valid input, please input an integer from 1 to ' + gameScale + '!');
-
-				} else {
-
-					difference = Math.ceil( Math.abs( input - secretNumber ) / hints.length);
-
-					feedback.returnResult();
-
-				}
-
-			},
-
-			returnResult: function (){
+		var returnResult = function (){
 
 				if ( difference ){
 
@@ -108,9 +84,51 @@ $(document).ready(function(){
 
 					alert('you won!');
 
-					newGame.resetGame(gameScale);
+					game.newGame(game.scale);
 
 				}
+
+			}
+
+		return {
+
+			passSecretNumber: function(passedNumber){
+
+				secretNumber = passedNumber;
+
+			},
+
+			get: function(){
+
+				game.input = $('#userGuess').val();
+
+				if(feedback.checkVal() && feedback.compareVal()){
+
+					returnResult();
+
+				}
+
+			},
+
+			checkVal: function(){
+
+				if ( !+game.input || ( game.input - Math.floor(game.input) ) || game.input < 1 || game.input > game.scale ){
+
+					return 0;
+
+				} else {
+
+					difference = Math.ceil( Math.abs( game.input - secretNumber ) / hints.length);
+
+					return 1;
+
+				}
+
+			},
+
+			compareVal: function(){
+
+				return 1;
 
 			}
 
@@ -118,13 +136,9 @@ $(document).ready(function(){
 
 	})();
 
-	newGame.resetGame(100);
+	game.newGame(100);
 
-	$('#guessButton').on('click',function(){
-
-		feedback.checkVal( $('#userGuess').val() )
-
-	});
+	$('#guessButton').on('click',feedback.get);
 
 	/*--- Display information modal box ---*/
   	$(".what").click(function(){
