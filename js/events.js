@@ -40,6 +40,30 @@ $(document).ready(function(){
 
 		var secretNumber;
 
+		var hints = [
+
+			"FIRE! FIRE!",
+
+			"Burning Hot",
+
+			"Hot",
+
+			"Very Warm",
+
+			"Warm",
+
+			"Cool",
+
+			"Cold",
+
+			"Ice Cold",
+
+			"Frozen Solid",
+
+			"ABSOLUTE ZERO!"
+
+		];
+
 		var input;
 
 		var difference = 0;
@@ -58,59 +82,7 @@ $(document).ready(function(){
 
 					);
 
-					switch( difference ) {
-
-						case 10:
-
-							$('#feedback').text( "ABSOLUTE ZERO!" );
-							break;
-
-						case 9:
-
-							$('#feedback').text( "Frozen Solid" );
-							break;
-
-						case 8:
-
-							$('#feedback').text( "Ice Cold" );
-							break;
-
-						case 7:
-
-							$('#feedback').text( "Cold" );
-							break;
-
-						case 6:
-
-							$('#feedback').text( "Cool" );
-							break;
-
-						case 5:
-
-							$('#feedback').text( "Warm" );
-							break;
-
-						case 4:
-
-							$('#feedback').text( "Very Warm" );
-							break;
-
-						case 3:
-
-							$('#feedback').text( "Hot" );
-							break;
-
-						case 2:
-
-							$('#feedback').text( "Burning Hot" );
-							break;
-
-						case 1:
-
-							$('#feedback').text( "FIRE! FIRE!" );
-							break;
-
-					}
+					$('#feedback').text( hints[difference - 1] );
 
 				} else {
 
@@ -142,7 +114,7 @@ $(document).ready(function(){
 
 					differencePrev = difference;
 
-					difference = Math.ceil( Math.abs( input - secretNumber ) / 10);
+					difference = Math.ceil( Math.abs( input - secretNumber ) / hints.length);
 
 					returnResult();
 
