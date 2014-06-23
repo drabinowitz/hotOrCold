@@ -70,9 +70,9 @@ $(document).ready(function(){
 
 			[
 
-				"Hotter",
-
 				"",
+
+				"Hotter",
 
 				"Colder"
 
@@ -100,13 +100,13 @@ $(document).ready(function(){
 
 					if ( game.inputPrev ){
 
-						if ( Math.round( ( difference - 0.5 ) / hints[0].length) * 2 == progress + 1 ) {
+						if ( Math.round( ( difference - 0.5 ) / hints[0].length) + 1 == progress ) {
 
-							$('#feedback').text( $('#feedback').text() + ' and ' + hints[1][progress + 1] );
+							$('#feedback').text( $('#feedback').text() + ' and ' + hints[1][progress] );
 
 						} else {
 
-							$('#feedback').text( $('#feedback').text() + ' but ' + hints[1][progress + 1] );
+							$('#feedback').text( $('#feedback').text() + ' but ' + hints[1][progress] );
 
 						}
 
@@ -168,11 +168,9 @@ $(document).ready(function(){
 
 				if ( game.inputPrev ){
 
-					progress = Math.abs( game.input - secretNumber ) - Math.abs( game.inputPrev - secretNumber )
+					if (game.input != game.inputPrev){
 
-					if ( progress ){
-
-						progress = progress > 0 ? 1 : -1;
+						progress = Math.ceil( ( Math.abs( game.input - secretNumber ) - Math.abs( game.inputPrev - secretNumber ) ) / game.scale ) + 1
 
 						return 1;
 
@@ -184,7 +182,7 @@ $(document).ready(function(){
 
 				} else {
 
-					progress = -1;
+					progress = 0;
 
 					return 1;
 
