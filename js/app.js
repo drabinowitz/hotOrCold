@@ -1,5 +1,3 @@
-/*var gameScale;*/
-
 $(document).ready(function(){
 
 	var game = (function() {
@@ -19,6 +17,10 @@ $(document).ready(function(){
 				secretNumber = Math.ceil(Math.random()*val);
 
 				game.scale = val;
+
+				game.input = 0;
+
+				game.inputPrev = 0;
 
 				feedback.passSecretNumber(secretNumber);
 
@@ -42,29 +44,45 @@ $(document).ready(function(){
 
 		var hints = [
 
-			"FIRE! FIRE!",
+			[
 
-			"Burning Hot",
+				"FIRE! FIRE!",
 
-			"Hot",
+				"Burning Hot",
 
-			"Very Warm",
+				"Hot",
 
-			"Warm",
+				"Very Warm",
 
-			"Cool",
+				"Warm",
 
-			"Cold",
+				"Cool",
 
-			"Ice Cold",
+				"Cold",
 
-			"Frozen Solid",
+				"Ice Cold",
 
-			"ABSOLUTE ZERO!"
+				"Frozen Solid",
+
+				"ABSOLUTE ZERO!"
+
+			],
+
+			[
+
+				"Hotter",
+
+				"",
+
+				"Colder"
+
+			]
 
 		];
 
 		var difference;
+
+		var progress;
 
 		var returnResult = function (){
 
@@ -78,7 +96,21 @@ $(document).ready(function(){
 
 					);
 
-					$('#feedback').text( hints[difference - 1] );
+					$('#feedback').text( hints[0][difference - 1] );
+
+					if ( game.inputPrev ){
+
+						if ( Math.round( ( difference - 0.5 ) / hints[0].length) * 2 == progress + 1 ) {
+
+							$('#feedback').text( $('#feedback').text() + ' and ' + hints[1][progress + 1] );
+
+						} else {
+
+							$('#feedback').text( $('#feedback').text() + ' but ' + hints[1][progress + 1] );
+
+						}
+
+					}
 
 				} else {
 
@@ -102,9 +134,15 @@ $(document).ready(function(){
 
 				game.input = $('#userGuess').val();
 
-				if(feedback.checkVal() && feedback.compareVal()){
+				if(feedback.checkVal() && feedback.checkPrevVal()){
 
 					returnResult();
+
+					game.inputPrev = game.input;
+
+				} else {
+
+					alert('Please enter a new whole number between 1 and ' + game.scale);
 
 				}
 
@@ -118,7 +156,7 @@ $(document).ready(function(){
 
 				} else {
 
-					difference = Math.ceil( Math.abs( game.input - secretNumber ) / hints.length);
+					difference = Math.ceil( Math.abs( game.input - secretNumber ) / hints[0].length);
 
 					return 1;
 
@@ -126,9 +164,31 @@ $(document).ready(function(){
 
 			},
 
-			compareVal: function(){
+			checkPrevVal: function(){
 
-				return 1;
+				if ( game.inputPrev ){
+
+					progress = Math.abs( game.input - secretNumber ) - Math.abs( game.inputPrev - secretNumber )
+
+					if ( progress ){
+
+						progress = progress > 0 ? 1 : -1;
+
+						return 1;
+
+					} else {
+
+						return 0;
+
+					}
+
+				} else {
+
+					progress = -1;
+
+					return 1;
+
+				}
 
 			}
 
