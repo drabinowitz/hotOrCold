@@ -66,7 +66,31 @@ $(document).ready(function(){
 
 		var difference;
 
-		function returnResult(){
+		return {
+
+			passSecretNumber: function(passedNumber){
+
+				secretNumber = passedNumber;
+
+			},
+
+			checkVal: function(input){
+
+				if ( !+input || ( input - Math.floor(input) ) || input < 1 || input > gameScale ){
+
+					alert('this is not a valid input, please input an integer from 1 to ' + gameScale + '!');
+
+				} else {
+
+					difference = Math.ceil( Math.abs( input - secretNumber ) / hints.length);
+
+					feedback.returnResult();
+
+				}
+
+			},
+
+			returnResult: function (){
 
 				if ( difference ){
 
@@ -85,32 +109,6 @@ $(document).ready(function(){
 					alert('you won!');
 
 					newGame.resetGame(gameScale);
-
-				}
-
-			}
-
-		return {
-
-			passSecretNumber: function(passedNumber){
-
-				secretNumber = passedNumber;
-
-			},
-
-			checkVal: function(input){
-
-				if ( !+input || ( input - Math.floor(input) ) || input < 1 || input > gameScale ){
-
-					alert('this is not a valid input, please input an integer from 1 to ' + gameScale + '!');
-
-				} else {
-
-					differencePrev = difference;
-
-					difference = Math.ceil( Math.abs( input - secretNumber ) / hints.length);
-
-					returnResult();
 
 				}
 
