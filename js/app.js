@@ -104,9 +104,31 @@ $(document).ready(function(){
 
 				game.input = $('#userGuess').val();
 
-				if ( feedback.checkVal(game.input,game.inputPrev) ){
+				if ( feedback.isValid( game.input ) ){
 
-					feedback.returnResult( feedback.compareVal(game.input,game.inputPrev) );
+					var guessResult = feedback.returnResult( feedback.compareVal(game.input,game.inputPrev) );
+
+					if ( guessResult[0] ){
+
+						alert('you won!');
+
+						game.newGame(game.scale);
+
+					} else {
+
+						$('#count').text( +$('#count').text() + 1 );
+
+						$('#guessList').append(
+
+							$('<li>').append( $('#userGuess').val() )
+
+						);
+
+						$('#feedback').text( guessResult[1] );
+
+						game.inputPrev = game.input;
+
+					}
 
 				} else {
 
@@ -116,15 +138,15 @@ $(document).ready(function(){
 
 			},
 
-			checkVal: function(inputVal,prevVal){
+			isValid: function(inputVal){
 
-				if ( !+inputVal || ( inputVal - Math.floor(inputVal) ) || inputVal < 1 || inputVal > game.scale || inputVal == prevVal){
+				if ( +inputVal && !( inputVal - Math.floor(inputVal) ) && inputVal >= 1 && inputVal <= game.scale ){
 
-					return false;
+					return true;
 
 				} else {
 
-					return true;
+					return false;
 
 				}
 
@@ -132,63 +154,43 @@ $(document).ready(function(){
 
 			compareVal: function(inputVal,prevVal){
 
-				var difference = Math.ceil( Math.abs( inputVal - secretNumber ) / hints[0].length);
+				var difference = Math.abs( inputVal - secretNumber );
 
-				if (!prevVal) {
+				var progress = (difference - Math.abs( prevVal - secretNumber )) <= 0 ? true : false;
 
-					return [difference,2,2];
+				if (prevVal){
+
+					return [difference,progress];
 
 				} else {
 
-					var progress = (Math.abs( inputVal - secretNumber ) - Math.abs( prevVal - secretNumber )) <= 0 ? 0 : 1;
-
-					return [
-
-						difference,
-
-						Math.round( ( difference - 0.5 ) / hints[0].length ) == progress ? 0 : 1,
-
-						progress
-
-					];
+					return [difference];
 
 				}
 
 			},
 
-			returnResult: function (difference){
+			returnResult: function (lookup){
 
-				if ( difference[0] ){
+				if ( !lookup[0] ){
 
-					$('#count').text( +$('#count').text() + 1 );
+					return [true];
 
-					$('#guessList').append(
+				} 
 
-						$('<li>').append( $('#userGuess').val() )
+				var hintAbsolute = Math.ceil ( lookup[0] * ( hints[0].length / game.scale ) );
 
-					);
+				if ( lookup.length > 1 ){
 
-					$('#feedback').text( 
+					var hintChange = lookup[1] ? 0 : 1;
 
-						hints[0][difference[0] - 1] +
+					var hintConjunction = Math.round( ( hintAbsolute - 0.5 ) / hints[0].length ) == hintChange ? 0 : 1;
 
-						hints[1][difference[1]] +
-
-						hints[2][difference[2]]
-
-					);
-
-					game.inputPrev = game.input;
-
-				} else if (difference[0] == 0) {
-
-					alert('you won!');
-
-					game.newGame(game.scale);
+					return [false, hints[0][ hintAbsolute - 1 ] + hints[1][ hintConjunction ] + hints[2][ hintChange ] ];
 
 				} else {
 
-					alert('please enter a new whole number between 1 and ' + game.scale);
+					return [ false, hints[0][ hintAbsolute - 1 ] ];
 
 				}
 
