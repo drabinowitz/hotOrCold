@@ -70,57 +70,27 @@ $(document).ready(function(){
 
 			[
 
-				"",
+				" and ",
+
+				" but ",
+
+				""
+
+			],
+
+			[
 
 				"Hotter",
 
-				"Colder"
+				"Colder",
+
+				""
 
 			]
 
 		];
 
-		var difference;
-
 		var progress;
-
-		var returnResult = function (){
-
-				if ( difference ){
-
-					$('#count').text( +$('#count').text() + 1 );
-
-					$('#guessList').append(
-
-						$('<li>').append( $('#userGuess').val() )
-
-					);
-
-					$('#feedback').text( hints[0][difference - 1] );
-
-					if ( game.inputPrev ){
-
-						if ( Math.round( ( difference - 0.5 ) / hints[0].length) + 1 == progress ) {
-
-							$('#feedback').text( $('#feedback').text() + ' and ' + hints[1][progress] );
-
-						} else {
-
-							$('#feedback').text( $('#feedback').text() + ' but ' + hints[1][progress] );
-
-						}
-
-					}
-
-				} else {
-
-					alert('you won!');
-
-					game.newGame(game.scale);
-
-				}
-
-			}
 
 		return {
 
@@ -134,57 +104,69 @@ $(document).ready(function(){
 
 				game.input = $('#userGuess').val();
 
-				if(feedback.checkVal() && feedback.checkPrevVal()){
+				feedback.returnResult( feedback.checkVal(game.input,game.inputPrev) );
 
-					returnResult();
-
-					game.inputPrev = game.input;
-
-				} else {
-
-					alert('Please enter a new whole number between 1 and ' + game.scale);
-
-				}
+				game.inputPrev = game.input;
 
 			},
 
-			checkVal: function(){
+			checkVal: function(inputVal,prevVal){
 
-				if ( !+game.input || ( game.input - Math.floor(game.input) ) || game.input < 1 || game.input > game.scale ){
+				var difference = Math.ceil( Math.abs( inputVal - secretNumber ) / hints[0].length);
+
+				if ( !+inputVal || ( inputVal - Math.floor(inputVal) ) || inputVal < 1 || inputVal > game.scale || inputVal == prevVal){
 
 					return 0;
 
+				} else if (!prevVal) {
+
+					return [difference,2,2];
+
 				} else {
 
-					difference = Math.ceil( Math.abs( game.input - secretNumber ) / hints[0].length);
+					var progress = (Math.abs( inputVal - secretNumber ) - Math.abs( prevVal - secretNumber )) <= 0 ? 0 : 1;
 
-					return 1;
+					return [
+
+						difference,
+
+						Math.round( ( difference - 0.5 ) / hints[0].length ) == progress ? 0 : 1,
+
+						progress
+
+					];
 
 				}
 
 			},
 
-			checkPrevVal: function(){
+			returnResult: function (difference){
 
-				if ( game.inputPrev ){
+				if ( difference[0] ){
 
-					if (game.input != game.inputPrev){
+					$('#count').text( +$('#count').text() + 1 );
 
-						progress = Math.ceil( ( Math.abs( game.input - secretNumber ) - Math.abs( game.inputPrev - secretNumber ) ) / game.scale ) + 1
+					$('#guessList').append(
 
-						return 1;
+						$('<li>').append( $('#userGuess').val() )
 
-					} else {
+					);
 
-						return 0;
+					$('#feedback').text( 
 
-					}
+						hints[0][difference[0] - 1] +
+
+						hints[1][difference[1]] +
+
+						hints[2][difference[2]]
+
+					);
 
 				} else {
 
-					progress = 0;
+					alert('you won!');
 
-					return 1;
+					game.newGame(game.scale);
 
 				}
 
