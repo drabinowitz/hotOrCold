@@ -104,19 +104,37 @@ $(document).ready(function(){
 
 				game.input = $('#userGuess').val();
 
-				feedback.returnResult( feedback.checkVal(game.input,game.inputPrev) );
+				if ( feedback.checkVal(game.input,game.inputPrev) ){
+
+					feedback.returnResult( feedback.compareVal(game.input,game.inputPrev) );
+
+				} else {
+
+					alert('please enter a new whole number between 1 and ' + game.scale);
+
+				}
 
 			},
 
 			checkVal: function(inputVal,prevVal){
 
-				var difference = Math.ceil( Math.abs( inputVal - secretNumber ) / hints[0].length);
-
 				if ( !+inputVal || ( inputVal - Math.floor(inputVal) ) || inputVal < 1 || inputVal > game.scale || inputVal == prevVal){
 
 					return false;
 
-				} else if (!prevVal) {
+				} else {
+
+					return true;
+
+				}
+
+			},
+
+			compareVal: function(inputVal,prevVal){
+
+				var difference = Math.ceil( Math.abs( inputVal - secretNumber ) / hints[0].length);
+
+				if (!prevVal) {
 
 					return [difference,2,2];
 
