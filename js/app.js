@@ -80,9 +80,9 @@ $(document).ready(function(){
 
 			[
 
-				"Hotter",
+				"Hotter than last guess",
 
-				"Colder",
+				"Colder than last guess",
 
 				""
 
@@ -106,8 +106,6 @@ $(document).ready(function(){
 
 				feedback.returnResult( feedback.checkVal(game.input,game.inputPrev) );
 
-				game.inputPrev = game.input;
-
 			},
 
 			checkVal: function(inputVal,prevVal){
@@ -116,7 +114,7 @@ $(document).ready(function(){
 
 				if ( !+inputVal || ( inputVal - Math.floor(inputVal) ) || inputVal < 1 || inputVal > game.scale || inputVal == prevVal){
 
-					return 0;
+					return false;
 
 				} else if (!prevVal) {
 
@@ -162,11 +160,17 @@ $(document).ready(function(){
 
 					);
 
-				} else {
+					game.inputPrev = game.input;
+
+				} else if (difference[0] == 0) {
 
 					alert('you won!');
 
 					game.newGame(game.scale);
+
+				} else {
+
+					alert('please enter a new whole number between 1 and ' + game.scale);
 
 				}
 
