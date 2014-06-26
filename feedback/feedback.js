@@ -64,7 +64,7 @@ var feedback = (function(){
 
 			var hintAbsolute = Math.ceil ( lookup.difference * ( hints[0].length / game.scale ) );
 
-			if ( typeof lookup.progress != 'undefined' ){
+			if ( lookup.hasOwnProperty( 'progress' ) ){
 
 				var hintChange = lookup.progress ? 0 : 1;
 
