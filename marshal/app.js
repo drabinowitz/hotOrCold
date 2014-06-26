@@ -15,4 +15,10 @@ $(document).ready(function(){
   		$(".overlay").fadeOut(1000);
   	});
 
+    $('.new').on('click',function(){
+
+      game.newGame.call(this,100);
+
+    });
+
 });
